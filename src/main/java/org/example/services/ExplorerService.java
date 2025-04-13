@@ -38,9 +38,8 @@ public class ExplorerService {
             }
 
             String fileName =  sanitizeASCII(path.getFileName().toString());
-            String encodedFileName = URLEncoder.encode(fileName, StandardCharsets.UTF_8).replace("+", "%20");
 
-            response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"; filename*=UTF-8''%s", fileName, encodedFileName));
+            response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", fileName));
             response.setContentType(mimeType);
             response.setContentLengthLong(Files.size(path));
 
