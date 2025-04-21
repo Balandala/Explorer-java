@@ -27,7 +27,7 @@
         <tbody>
             <c:forEach items="${files}" var="file">
                 <tr>
-                    <td><a href="?path=${path}/${file.name}">${file.name}</a><td>
+                    <td><a href="?path=${path}${file.name}">${file.name}</a><td>
                     <td>${file.size}</td>
                     <td>${file.lastUpdated}</td>
                 </tr>

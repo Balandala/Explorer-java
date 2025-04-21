@@ -10,29 +10,28 @@ import org.example.model.FileDTO;
 import org.example.services.ExplorerService;
 
 import java.io.IOException;
-import java.net.URI;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 @WebServlet("/")
-public class explorerServlet extends HttpServlet {
+public class ExplorerServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        String root = "D:/dev/labs_java";
+        String root = "/home";
         String urlPath = req.getParameter("path");
-        if (urlPath == null || urlPath.equals("/"))
-            urlPath = "";
+        if (urlPath == null){
+            urlPath = "/";
+        }
 
-        Path relativePath = Path.of(urlPath);
-        String parentPath = relativePath.getParent() != null? relativePath.getParent().normalize().toString().replace("\\","/") : null;
+        Path relativePath = Paths.get(urlPath).normalize();
+        String parentPath = relativePath.getParent() != null? relativePath.getParent().toString().replace("\\","/") : "/";
+        Path path = Paths.get(root, relativePath.toString());
 
-        Path path = Path.of(root + urlPath);
         ArrayList<FileDTO> files = new ArrayList<>();
         if (Files.isDirectory(path)) {
             ExplorerService.getFiles(files, path);
@@ -41,9 +40,8 @@ public class explorerServlet extends HttpServlet {
             ExplorerService.downloadFile(resp, path);
         }
 
-
         req.setAttribute("time", DateFormat.getDateTimeInstance().format(new Date()));
-        req.setAttribute("path", urlPath);
+        req.setAttribute("path", relativePath.toString().replace("\\", "/"));
         req.setAttribute("parentPath", parentPath);
         req.setAttribute("files", files);
 
