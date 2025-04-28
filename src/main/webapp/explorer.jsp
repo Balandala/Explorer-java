@@ -5,8 +5,18 @@
 <html lang="ru-RU">
 <head>
     <title>Explorer</title>
+    <style>
+        header {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        }
+    </style>
 <head>
 <body>
+    <header>
+        <a href="login">Выйти</a>
+    </header>
     <p>${time}</p>
     <h1>${path}</h1>
     <a href="?path=${parentPath}">Вверх</a>

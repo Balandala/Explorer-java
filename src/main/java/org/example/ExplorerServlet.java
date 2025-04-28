@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.example.model.FileDTO;
 import org.example.services.ExplorerService;
 
@@ -22,7 +23,21 @@ public class ExplorerServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String root = "/home";
+
+        HttpSession session = req.getSession();
+        if (session == null || session.getAttribute("login") == null){
+            resp.sendRedirect("/files/login");
+            return;
+        }
+        String username = (String) session.getAttribute("login");
+        System.out.printf("Попытка зайти за пользователя: %s\n", username);
+
+
+        String root = "/home/" + username;
+        if (!Files.exists(Path.of(root))){
+            Files.createDirectory(Path.of(root));
+        }
+
         String urlPath = req.getParameter("path");
         if (urlPath == null){
             urlPath = "/";
@@ -31,6 +46,7 @@ public class ExplorerServlet extends HttpServlet {
         Path relativePath = Paths.get(urlPath).normalize();
         String parentPath = relativePath.getParent() != null? relativePath.getParent().toString().replace("\\","/") : "/";
         Path path = Paths.get(root, relativePath.toString());
+
 
         ArrayList<FileDTO> files = new ArrayList<>();
         if (Files.isDirectory(path)) {
