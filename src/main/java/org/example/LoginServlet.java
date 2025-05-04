@@ -36,6 +36,7 @@ public class LoginServlet extends HttpServlet {
             req.setAttribute("status","Неверный логин или пароль");
             RequestDispatcher dispatcher = req.getRequestDispatcher("login.jsp");
             dispatcher.forward(req, resp);
+            return;
         }
 
         HttpSession session = req.getSession();
