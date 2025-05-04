@@ -10,8 +10,8 @@
             <h1>Вход</h1>
             <form action="" method="post">
                 <div>
-                    <label for="login">Логин</label>
-                    <input name="login" id="login" required>
+                    <label for="username">Логин</label>
+                    <input name="username" id="username" required>
                 </div>
                 <div>
                     <label for="password">Пароль</label>

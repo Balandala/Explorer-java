@@ -8,12 +8,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.example.model.Users;
+import org.example.services.DatabaseService;
 
 import java.io.IOException;
 
 
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
+
+    private static final DatabaseService databaseService = DatabaseService.Get();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         RequestDispatcher dispatcher = req.getRequestDispatcher("register.jsp");
@@ -22,19 +26,19 @@ public class RegisterServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String login = req.getParameter("login");
+        String username = req.getParameter("username");
         String password = req.getParameter("password");
         String email = req.getParameter("email");
 
-        if (login.isBlank() || password.isBlank() || email.isBlank()){
+        if (username.isBlank() || password.isBlank() || email.isBlank()){
             req.setAttribute("status", "Все поля должны быть заполнены");
             RequestDispatcher dispatcher = req.getRequestDispatcher("register.jsp");
             dispatcher.forward(req, resp);
             return;
         }
 
-        if (!Users.AreUserExists(login)){
-            Users.Create(login, password, email);
+        if (!databaseService.IsExists(username)){
+            databaseService.CreateNewUser(username, email, password);
             req.setAttribute("status","Пользователь успшно создан!");
             resp.sendRedirect("/files/login");
         }

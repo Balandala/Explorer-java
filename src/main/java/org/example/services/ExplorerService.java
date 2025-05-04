@@ -26,7 +26,6 @@ public class ExplorerService {
                 files.add(new FileDTO(x));
             });
         } catch (Exception e) {
-            System.out.println(dir.toString());
             throw new RuntimeException(String.format("Попытка получить данные о файлах в папке %s привела к исключению: %s", dir.toString(), e.getMessage()));
         }
     }

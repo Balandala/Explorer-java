@@ -25,13 +25,11 @@ public class ExplorerServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         HttpSession session = req.getSession();
-        if (session == null || session.getAttribute("login") == null){
+        if (session == null || session.getAttribute("username") == null){
             resp.sendRedirect("/files/login");
             return;
         }
-        String username = (String) session.getAttribute("login");
-        System.out.printf("Попытка зайти за пользователя: %s\n", username);
-
+        String username = (String) session.getAttribute("username");
 
         String root = "/home/" + username;
         if (!Files.exists(Path.of(root))){
@@ -57,7 +55,9 @@ public class ExplorerServlet extends HttpServlet {
         }
 
         req.setAttribute("time", DateFormat.getDateTimeInstance().format(new Date()));
-        req.setAttribute("path", relativePath.toString().replace("\\", "/"));
+        if (!relativePath.toString().equals("\\")) {
+            req.setAttribute("path", relativePath.toString().replace("\\", "/"));
+        }
         req.setAttribute("parentPath", parentPath);
         req.setAttribute("files", files);
 

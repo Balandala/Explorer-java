@@ -9,15 +9,19 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.example.model.User;
 import org.example.model.Users;
+import org.example.services.DatabaseService;
 
 import java.io.IOException;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
+
+    private static final DatabaseService databaseService = DatabaseService.Get();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        session.removeAttribute("login");
+        session.removeAttribute("username");
         session.removeAttribute("password");
         RequestDispatcher dispatcher = req.getRequestDispatcher("login.jsp");
         dispatcher.forward(req, resp);
@@ -26,23 +30,21 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String login = req.getParameter("login");
+        String username = req.getParameter("username");
         String password =req.getParameter("password");
-        System.out.printf("Данные о логине успшно получены!\nlogin: %s\npassword: %s\n", login, password);
+        System.out.printf("Данные о логине успшно получены!\nusername: %s\npassword: %s\n", username, password);
 
-
-        User user = Users.GetUser(login);
-        if (user == null || !user.getPassword().equals(password)){
+        if (!databaseService.IsVerified(username, password)){
             req.setAttribute("status","Неверный логин или пароль");
             RequestDispatcher dispatcher = req.getRequestDispatcher("login.jsp");
             dispatcher.forward(req, resp);
         }
 
         HttpSession session = req.getSession();
-        session.setAttribute("login", login);
+        session.setAttribute("username", username);
         session.setAttribute("password", password);
 
-        System.out.printf("Данные о логине успшно отправлены!\nlogin: %s\npassword: %s\n", session.getAttribute("login"), session.getAttribute("password"));
+        System.out.printf("Данные о логине успшно отправлены!\nusername: %s\npassword: %s\n", session.getAttribute("username"), session.getAttribute("password"));
 
         resp.sendRedirect("/files/");
     }
