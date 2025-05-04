@@ -16,8 +16,6 @@ import java.io.IOException;
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
 
-    private static final DatabaseService databaseService = DatabaseService.Get();
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         RequestDispatcher dispatcher = req.getRequestDispatcher("register.jsp");
@@ -37,8 +35,8 @@ public class RegisterServlet extends HttpServlet {
             return;
         }
 
-        if (!databaseService.IsExists(username)){
-            databaseService.CreateNewUser(username, email, password);
+        if (!DatabaseService.IsExists(username)){
+            DatabaseService.CreateNewUser(username, email, password);
             req.setAttribute("status","Пользователь успшно создан!");
             resp.sendRedirect("/files/login");
         }

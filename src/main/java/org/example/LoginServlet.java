@@ -16,8 +16,6 @@ import java.io.IOException;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-    private static final DatabaseService databaseService = DatabaseService.Get();
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
@@ -34,7 +32,7 @@ public class LoginServlet extends HttpServlet {
         String password =req.getParameter("password");
         System.out.printf("Данные о логине успшно получены!\nusername: %s\npassword: %s\n", username, password);
 
-        if (!databaseService.IsVerified(username, password)){
+        if (!DatabaseService.IsVerified(username, password)){
             req.setAttribute("status","Неверный логин или пароль");
             RequestDispatcher dispatcher = req.getRequestDispatcher("login.jsp");
             dispatcher.forward(req, resp);
